@@ -1,0 +1,51 @@
+{
+  "name": "h5-encrypted-display-page",
+  "version": "1.0.0",
+  "description": "H5 page for encrypted instruction processing and dynamic image display",
+  "main": "public/index.html",
+  "type": "module",
+  "scripts": {
+    "start": "firebase serve",
+    "build": "NODE_ENV=production node build.js",
+    "build:dev": "NODE_ENV=development node build.js",
+    "build:analyze": "npm run build && node -e \"console.log('📊 Build analysis:'); const fs = require('fs'); const stats = fs.statSync('dist/app.bundle.min.js'); console.log('Bundle size:', (stats.size / 1024).toFixed(1) + 'KB');\"",
+    "build:github-pages": "NODE_ENV=production DEPLOY_TARGET=github-pages node build.js",
+    "deploy": "npm run build && firebase deploy",
+    "deploy:dev": "firebase deploy",
+    "deploy:github-pages": "npm run build:github-pages",
+    "verify": "node scripts/verify-deployment.js",
+    "verify:ci": "node scripts/verify-ci.js",
+    "verify:build": "npm run build && npm run verify",
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:perf": "npx vitest run performance.test.js",
+    "benchmark": "node benchmark.js",
+    "perf:full": "npm run build && npm run benchmark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zweite/seeme.git"
+  },
+  "keywords": [
+    "h5",
+    "encrypted",
+    "display",
+    "firebase",
+    "github-pages"
+  ],
+  "author": "H5 Display System",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^12.0.0"
+  },
+  "devDependencies": {
+    "@vitest/ui": "^1.0.0",
+    "esbuild": "^0.25.8",
+    "jsdom": "^26.1.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

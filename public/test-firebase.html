@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Service Test</title>
+    
+    <!-- Firebase SDK -->
+    <script defer src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/12.0.0/firebase-performance-compat.js"></script>
+    
+    <!-- Environment configuration -->
+    <script src="env-config.js"></script>
+    
+    <!-- Firebase initialization -->
+    <script>
+      // Initialize Firebase when SDK is loaded
+      function initializeFirebase() {
+        if (typeof firebase !== 'undefined' && window.ENV_CONFIG && window.ENV_CONFIG.firebase.enabled) {
+          try {
+            firebase.initializeApp(window.ENV_CONFIG.firebase.config);
+            console.log('Firebase initialized with environment config');
+            return true;
+          } catch (error) {
+            console.error('Firebase initialization failed:', error);
+            return false;
+          }
+        }
+        return false;
+      }
+    </script>
+</head>
+<body>
+    <h1>Firebase Service Test</h1>
+    <div id="status">Loading...</div>
+    <button id="test-tracking">Test Event Tracking</button>
+    <button id="test-error">Test Error Reporting</button>
+    <button id="test-performance">Test Performance Tracking</button>
+
+    <script src="firebase-service.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const statusDiv = document.getElementById('status');
+            
+            try {
+                // Wait for Firebase SDK to load and initialize
+                let attempts = 0;
+                const maxAttempts = 50; // 5 seconds max wait
+                
+                while (attempts < maxAttempts && !initializeFirebase()) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    attempts++;
+                }
+                
+                if (attempts >= maxAttempts) {
+                    throw new Error('Firebase SDK failed to load or initialize');
+                }
+                
+                // Initialize Firebase Service
+                const firebaseService = new FirebaseService();
+                await firebaseService.initialize();
+                
+                if (firebaseService.isInitialized()) {
+                    statusDiv.innerHTML = '✅ Firebase Service initialized successfully';
+                    
+                    // Track page view
+                    firebaseService.trackPageView();
+                    
+                    // Set up test buttons
+                    document.getElementById('test-tracking').addEventListener('click', () => {
+                        firebaseService.trackUserInteraction('test_button_click', {
+                            button_id: 'test-tracking',
+                            timestamp: Date.now()
+                        });
+                        console.log('Event tracking test completed');
+                    });
+                    
+                    document.getElementById('test-error').addEventListener('click', () => {
+                        const testError = new Error('Test error for Firebase reporting');
+                        firebaseService.reportError(testError, 'manual_test');
+                        console.log('Error reporting test completed');
+                    });
+                    
+                    document.getElementById('test-performance').addEventListener('click', () => {
+                        firebaseService.trackPerformance('test_metric', 1500, {
+                            test_type: 'manual',
+                            user_initiated: 'true'
+                        });
+                        console.log('Performance tracking test completed');
+                    });
+                    
+                } else {
+                    statusDiv.innerHTML = '⚠️ Firebase Service initialized with limited functionality';
+                }
+                
+            } catch (error) {
+                statusDiv.innerHTML = '❌ Firebase Service initialization failed: ' + error.message;
+                console.error('Firebase Service test error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

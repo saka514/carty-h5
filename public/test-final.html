@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final App Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>H5 Encrypted Display Page - Final Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Environment Configuration Test</h2>
+        <div id="env-test"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Module Import Test</h2>
+        <div id="module-test"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Encryption/Decryption Test</h2>
+        <div id="crypto-test"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Generate Test URL</h2>
+        <div id="url-test"></div>
+        <button onclick="generateAndTestUrl()">Generate Test URL</button>
+    </div>
+    
+    <script src="env-config.js"></script>
+    <script type="module">
+        // Test environment configuration
+        function testEnvironment() {
+            const results = [];
+            
+            if (window.ENV_CONFIG) {
+                results.push('<span class="success">✅ ENV_CONFIG loaded</span>');
+                results.push(`Environment: ${window.ENV_CONFIG.environment}`);
+                results.push(`Firebase enabled: ${window.ENV_CONFIG.firebase.enabled}`);
+                results.push(`Debug mode: ${window.ENV_CONFIG.debug}`);
+            } else {
+                results.push('<span class="error">❌ ENV_CONFIG not loaded</span>');
+            }
+            
+            document.getElementById('env-test').innerHTML = results.join('<br>');
+        }
+        
+        // Test module imports
+        async function testModules() {
+            const results = [];
+            
+            try {
+                const modules = [
+                    { name: 'DecryptionService', path: './decryption-service.js' },
+                    { name: 'DisplayController', path: './display-controller.js' },
+                    { name: 'ClickHandler', path: './click-handler.js' },
+                    { name: 'ErrorHandler', path: './error-handler.js' },
+                    { name: 'FirebaseService', path: './firebase-service.js' },
+                    { name: 'ParameterParser', path: './parameter-parser.js' }
+                ];
+                
+                for (const module of modules) {
+                    try {
+                        const { default: ModuleClass } = await import(module.path);
+                        const instance = new ModuleClass();
+                        results.push(`<span class="success">✅ ${module.name} imported and instantiated</span>`);
+                    } catch (error) {
+                        results.push(`<span class="error">❌ ${module.name} failed: ${error.message}</span>`);
+                    }
+                }
+                
+            } catch (error) {
+                results.push(`<span class="error">❌ Module test failed: ${error.message}</span>`);
+            }
+            
+            document.getElementById('module-test').innerHTML = results.join('<br>');
+        }
+        
+        // Test encryption/decryption
+        async function testCrypto() {
+            const results = [];
+            
+            try {
+                const { default: DecryptionService } = await import('./decryption-service.js');
+                const service = new DecryptionService();
+                
+                const testData = {
+                    image_url: 'https://example.com/test.jpg',
+                    click_url: 'https://example.com/click',
+                    deeplink_url: null,
+                    auto_click: false,
+                    deeplink_priority: false,
+                    auto_click_delay: null
+                };
+                
+                // Test encryption
+                const encrypted = await service.encrypt(testData);
+                results.push('<span class="success">✅ Encryption successful</span>');
+                results.push(`Encrypted length: ${encrypted.length} characters`);
+                
+                // Test decryption
+                const decrypted = await service.decrypt(encrypted);
+                results.push('<span class="success">✅ Decryption successful</span>');
+                results.push(`Decrypted image_url: ${decrypted.image_url}`);
+                
+                // Verify data integrity
+                if (JSON.stringify(testData) === JSON.stringify(decrypted)) {
+                    results.push('<span class="success">✅ Data integrity verified</span>');
+                } else {
+                    results.push('<span class="error">❌ Data integrity check failed</span>');
+                }
+                
+            } catch (error) {
+                results.push(`<span class="error">❌ Crypto test failed: ${error.message}</span>`);
+            }
+            
+            document.getElementById('crypto-test').innerHTML = results.join('<br>');
+        }
+        
+        // Generate test URL
+        window.generateAndTestUrl = async function() {
+            try {
+                const { default: DecryptionService } = await import('./decryption-service.js');
+                const service = new DecryptionService();
+                
+                const instructionSet = {
+                    image_url: 'https://dsp-material.advlove.io/upload/20230414/b906239c100cd2b8ababe97611381204.gif',
+                    click_url: 'https://play.google.com/store/apps/details?id=com.alibaba.aliexpresshd&gl=it',
+                    deeplink_url: null,
+                    auto_click: false,
+                    deeplink_priority: false,
+                    auto_click_delay: null
+                };
+                
+                const encryptedPayload = await service.encrypt(instructionSet);
+                const testUrl = `./index.html?payload=${encodeURIComponent(encryptedPayload)}`;
+                
+                document.getElementById('url-test').innerHTML = `
+                    <div class="success">✅ Test URL generated successfully!</div>
+                    <p><strong>Instruction Set:</strong></p>
+                    <pre>${JSON.stringify(instructionSet, null, 2)}</pre>
+                    <p><strong>Test URL:</strong></p>
+                    <a href="${testUrl}" target="_blank" style="word-break: break-all;">${testUrl}</a>
+                    <br><br>
+                    <button onclick="window.open('${testUrl}', '_blank')">🚀 Open Test Page</button>
+                `;
+                
+            } catch (error) {
+                document.getElementById('url-test').innerHTML = `
+                    <span class="error">❌ URL generation failed: ${error.message}</span>
+                `;
+            }
+        };
+        
+        // Run all tests
+        testEnvironment();
+        testModules();
+        testCrypto();
+    </script>
+</body>
+</html>

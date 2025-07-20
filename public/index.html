@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="H5 Encrypted Display Page - Dynamic image display with encrypted instruction processing">
+    <meta name="author" content="H5 Display System">
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Prevent zoom on iOS -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>H5 Encrypted Display Page</title>
+
+    <!-- Performance optimizations -->
+    <link rel="preconnect" href="https://firebase.googleapis.com">
+    <link rel="preconnect" href="https://firebaseapp.com">
+    <link rel="dns-prefetch" href="//firebase.googleapis.com">
+    <link rel="dns-prefetch" href="//firebaseapp.com">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="browser-compatibility.css" as="style">
+    <!-- ES6 modules are loaded dynamically, so we don't preload them to avoid unused resource warnings -->
+    
+    <!-- Firebase SDK with performance optimizations -->
+    <script defer src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/12.0.0/firebase-performance-compat.js"></script>
+    
+    <!-- Environment configuration -->
+    <script src="env-config.js"></script>
+    
+    <!-- Firebase initialization script -->
+    <script>
+      // Initialize Firebase when SDK is loaded
+      document.addEventListener('DOMContentLoaded', function() {
+        // Wait for Firebase SDK to load
+        function initializeFirebase() {
+          // Check if Firebase is enabled in configuration
+          if (!window.ENV_CONFIG || !window.ENV_CONFIG.firebase || !window.ENV_CONFIG.firebase.enabled) {
+            console.log('Firebase disabled in configuration - skipping initialization');
+            return;
+          }
+          
+          if (typeof firebase !== 'undefined') {
+            try {
+              // Check if Firebase is already initialized
+              try {
+                firebase.app(); // This will throw if no app exists
+                console.log('Firebase already initialized');
+                return;
+              } catch (e) {
+                // No app exists, proceed with initialization
+              }
+              
+              firebase.initializeApp(window.ENV_CONFIG.firebase.config);
+              console.log('Firebase initialized with environment config');
+            } catch (error) {
+              console.error('Firebase initialization failed:', error);
+            }
+          } else {
+            // Retry after a short delay if Firebase SDK not loaded yet
+            setTimeout(initializeFirebase, 100);
+          }
+        }
+        
+        initializeFirebase();
+      });
+    </script>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="browser-compatibility.css">
+    
+    <!-- Performance monitoring script -->
+    <script>
+      // Early performance monitoring
+      window.performanceMetrics = {
+        navigationStart: performance.timing.navigationStart,
+        loadStart: Date.now()
+      };
+      
+      // Critical resource loading optimization
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').catch(function(err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Main application container -->
+    <div id="app-container">
+      <!-- Image display area -->
+      <div id="image-container">
+        <div id="display-image" style="display: none;"></div>
+      </div>
+      
+      <!-- Loading state -->
+      <div id="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
+      
+      <!-- Error state -->
+      <div id="error-state" style="display: none;">
+        <div class="error-icon">⚠</div>
+        <h2>Error</h2>
+        <p id="error-message">Something went wrong. Please try again.</p>
+      </div>
+    </div>
+
+    <!-- Application scripts -->
+    <!-- build:replace-with-bundle -->
+    <script type="module" src="app.js"></script>
+    <!-- /build:replace-with-bundle -->
+  </body>
+</html>

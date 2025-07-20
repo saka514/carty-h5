@@ -1,0 +1,802 @@
+/* CSS Reset and Base Styles for H5 Encrypted Display Page */
+
+/* CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default styling */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+/* Base HTML and Body Styles for Full-Screen Display */
+html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #333;
+  background-color: #000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Main Application Container */
+#app-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+}
+
+/* Image Container - Full Screen Display */
+#image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#display-image {
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+/* Loading State */
+#loading-state {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #fff;
+  z-index: 10;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#loading-state p {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Error State */
+#error-state {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #fff;
+  z-index: 10;
+  max-width: 80%;
+}
+
+.error-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  color: #ff6b6b;
+}
+
+#error-state h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #ff6b6b;
+}
+
+#error-state p {
+  font-size: 16px;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* Enhanced Responsive Design for Different Screen Sizes and Devices */
+
+/* Tablet Portrait and Small Desktop */
+@media screen and (max-width: 1024px) {
+  #loading-state p {
+    font-size: 15px;
+  }
+  
+  .loading-spinner {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Tablet and Mobile Landscape */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .error-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+  
+  #error-state h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  #error-state p {
+    font-size: 14px;
+  }
+  
+  .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+  }
+  
+  #loading-state p {
+    font-size: 13px;
+  }
+}
+
+/* Mobile Portrait */
+@media screen and (max-width: 480px) {
+  #error-state {
+    max-width: 90%;
+    padding: 0 16px;
+  }
+  
+  .error-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+  
+  #error-state h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  
+  #error-state p {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  
+  .loading-spinner {
+    width: 28px;
+    height: 28px;
+    border-width: 2px;
+    margin-bottom: 12px;
+  }
+  
+  #loading-state p {
+    font-size: 12px;
+  }
+}
+
+/* Small Mobile Devices */
+@media screen and (max-width: 360px) {
+  #error-state {
+    max-width: 95%;
+    padding: 0 12px;
+  }
+  
+  .error-icon {
+    font-size: 28px;
+  }
+  
+  #error-state h2 {
+    font-size: 16px;
+  }
+  
+  #error-state p {
+    font-size: 12px;
+  }
+  
+  .loading-spinner {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Large Desktop Screens */
+@media screen and (min-width: 1920px) {
+  .loading-spinner {
+    width: 48px;
+    height: 48px;
+    border-width: 5px;
+  }
+  
+  #loading-state p {
+    font-size: 16px;
+  }
+  
+  .error-icon {
+    font-size: 56px;
+  }
+  
+  #error-state h2 {
+    font-size: 28px;
+  }
+  
+  #error-state p {
+    font-size: 18px;
+  }
+}
+
+/* Enhanced Orientation Change Handling */
+@media screen and (orientation: landscape) {
+  #display-image {
+    /* Background image will automatically adapt with background-size: contain */
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  /* Optimize for landscape viewing */
+  #error-state {
+    max-width: 60%;
+  }
+  
+  #loading-state {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+@media screen and (orientation: portrait) {
+  #display-image {
+    /* Background image will automatically adapt with background-size: contain */
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  /* Optimize for portrait viewing */
+  #error-state {
+    max-width: 85%;
+  }
+  
+  #loading-state {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Device-specific orientation handling */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  /* Short landscape screens (like phones in landscape) */
+  .error-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  
+  #error-state h2 {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  
+  #error-state p {
+    font-size: 12px;
+  }
+  
+  .loading-spinner {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 8px;
+  }
+  
+  #loading-state p {
+    font-size: 11px;
+  }
+}
+
+/* Enhanced Touch and Mouse Interaction */
+#display-image {
+  /* Touch-friendly cursor */
+  cursor: pointer;
+  
+  /* Smooth transitions for interactions */
+  -webkit-transition: opacity 0.2s ease, -webkit-transform 0.1s ease;
+  -moz-transition: opacity 0.2s ease, -moz-transform 0.1s ease;
+  -o-transition: opacity 0.2s ease, -o-transform 0.1s ease;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+  
+  /* Prevent image dragging */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  
+  /* Prevent text selection */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  /* Touch action optimization */
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+}
+
+/* Desktop hover effects */
+@media (hover: hover) and (pointer: fine) {
+  #display-image:hover {
+    opacity: 0.95;
+    -webkit-transform: scale(1.001);
+    -moz-transform: scale(1.001);
+    -ms-transform: scale(1.001);
+    -o-transform: scale(1.001);
+    transform: scale(1.001);
+    /* Subtle zoom effect for background image on hover */
+    background-size: 100.1%;
+  }
+}
+
+/* Touch device active states */
+@media (hover: none) and (pointer: coarse) {
+  #display-image:active {
+    opacity: 0.9;
+    -webkit-transform: scale(0.999);
+    -moz-transform: scale(0.999);
+    -ms-transform: scale(0.999);
+    -o-transform: scale(0.999);
+    transform: scale(0.999);
+    /* Subtle zoom effect for background image on active state */
+    background-size: 99.9%;
+  }
+}
+
+/* Universal active state for all devices */
+#display-image:active {
+  opacity: 0.9;
+}
+
+/* Enhanced touch targets for mobile */
+@media screen and (max-width: 768px) {
+  #display-image {
+    /* Ensure minimum touch target size */
+    min-width: 44px;
+    min-height: 44px;
+    /* Maintain background image properties on mobile */
+    background-position: center;
+    background-size: contain;
+  }
+}
+
+/* Prevent text selection and context menu */
+img, #display-image {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: auto;
+}
+
+/* Hide scrollbars */
+::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Cross-browser Compatibility Enhancements */
+
+/* Vendor prefixes for transforms and animations */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@-moz-keyframes spin {
+  0% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg); }
+}
+
+@-o-keyframes spin {
+  0% { -o-transform: rotate(0deg); }
+  100% { -o-transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  -webkit-animation: spin 1s linear infinite;
+  -moz-animation: spin 1s linear infinite;
+  -o-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+}
+
+/* Enhanced browser support for flexbox */
+#app-container {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+#image-container {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+/* Enhanced viewport units support */
+html {
+  height: 100%;
+  height: 100vh;
+  width: 100%;
+  width: 100vw;
+}
+
+body {
+  height: 100%;
+  height: 100vh;
+  width: 100%;
+  width: 100vw;
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-appearance: none) {
+  body {
+    /* Fix for iOS Safari viewport height issues */
+    height: -webkit-fill-available;
+  }
+  
+  #app-container {
+    height: -webkit-fill-available;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    -webkit-animation: none;
+    -moz-animation: none;
+    -o-animation: none;
+    animation: none;
+  }
+  
+  #display-image {
+    -webkit-transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    transition: none;
+  }
+  
+  * {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  #loading-state,
+  #error-state {
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #fff;
+  }
+  
+  .loading-spinner {
+    border-color: rgba(255, 255, 255, 0.5);
+    border-top-color: #fff;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  /* Already optimized for dark backgrounds */
+  body {
+    background-color: #000;
+  }
+}
+
+/* Print styles (hide interactive elements) */
+@media print {
+  #loading-state,
+  #error-state {
+    display: none !important;
+  }
+  
+  #display-image {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    transform: none !important;
+  }
+}/
+* Enhanced Background Image Responsive Styles */
+
+/* Extra Small Devices (phones, 360px and down) */
+@media screen and (max-width: 360px) {
+  #display-image {
+    background-size: contain;
+    /* Optimize for very small screens */
+    background-position: center 40%; /* Slight adjustment for better viewing on small screens */
+  }
+}
+
+/* Small Devices (phones, 576px and down) */
+@media screen and (max-width: 576px) {
+  #display-image {
+    background-size: contain;
+    /* Ensure image is fully visible */
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Medium Devices (tablets, 768px and down) */
+@media screen and (max-width: 768px) {
+  #display-image {
+    background-size: contain;
+  }
+}
+
+/* Large Devices (desktops, 992px and down) */
+@media screen and (max-width: 992px) {
+  #display-image {
+    background-size: contain;
+  }
+}
+
+/* Extra Large Devices (large desktops, 1200px and up) */
+@media screen and (min-width: 1200px) {
+  #display-image {
+    background-size: contain;
+    /* Optimize for large screens */
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+/* Device Orientation Specific Styles */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  /* Phones in landscape mode */
+  #display-image {
+    background-size: contain;
+    background-position: center;
+    /* Optimize for limited vertical space */
+    height: 100%;
+  }
+}
+
+@media screen and (orientation: portrait) and (min-aspect-ratio: 2/3) {
+  /* Tablets and phones in portrait mode with wider aspect ratio */
+  #display-image {
+    background-size: contain;
+    background-position: center;
+  }
+}
+
+/* High Pixel Density Screens (Retina displays) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  #display-image {
+    /* Optimize background image rendering on high-DPI screens */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    image-rendering: -webkit-optimize-contrast; /* Safari */
+    image-rendering: crisp-edges; /* Firefox */
+  }
+}
+
+/* iOS-specific optimizations */
+@supports (-webkit-touch-callout: none) {
+  #display-image {
+    /* Fix for iOS Safari viewport height issues */
+    height: -webkit-fill-available;
+    /* Prevent unwanted touch behaviors */
+    -webkit-touch-callout: none;
+  }
+}
+
+/* Android-specific optimizations */
+@supports not (-webkit-touch-callout: none) and (-webkit-appearance: none) {
+  #display-image {
+    /* Android-specific adjustments if needed */
+    background-attachment: scroll; /* Ensure smooth scrolling on Android */
+  }
+}/*
+ Background Image Error Handling Styles */
+
+/* Placeholder for failed background images */
+.image-placeholder {
+  background-color: rgba(50, 50, 50, 0.7);
+  background-image: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.image-placeholder::before {
+  content: "Image Unavailable";
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Error state specific to background images */
+.background-image-error {
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 105, 97, 0.5);
+}
+
+/* Clickable error state */
+.clickable-error-state {
+  cursor: pointer !important;
+  position: relative;
+}
+
+.clickable-error-state::after {
+  content: "Tap to continue";
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+/* Error type specific styling */
+#error-message[data-error-type="cors"] {
+  color: #ffcc00; /* Yellow for CORS errors */
+}
+
+#error-message[data-error-type="network"] {
+  color: #ff6b6b; /* Red for network errors */
+}
+
+#error-message[data-error-type="timeout"] {
+  color: #f8a5c2; /* Pink for timeout errors */
+}
+
+#error-message[data-error-type="format"] {
+  color: #63cdda; /* Blue for format errors */
+}
+
+/* Responsive styles for error messages */
+@media screen and (max-width: 768px) {
+  .image-placeholder::before {
+    font-size: 14px;
+    padding: 15px;
+  }
+  
+  .clickable-error-state::after {
+    font-size: 12px;
+    padding: 6px 12px;
+    bottom: 15px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .image-placeholder::before {
+    font-size: 12px;
+    padding: 10px;
+  }
+  
+  .clickable-error-state::after {
+    font-size: 10px;
+    padding: 4px 10px;
+    bottom: 10px;
+  }
+}

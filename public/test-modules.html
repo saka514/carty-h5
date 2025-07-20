@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Module Imports</title>
+</head>
+<body>
+    <h1>Module Import Test</h1>
+    <div id="results"></div>
+    
+    <script src="env-config.js"></script>
+    <script type="module">
+        const results = document.getElementById('results');
+        
+        async function testModuleImports() {
+            const testResults = [];
+            
+            try {
+                // Test DecryptionService
+                const { default: DecryptionService } = await import('./decryption-service.js');
+                testResults.push('✅ DecryptionService imported successfully');
+                
+                // Test DisplayController
+                const { default: DisplayController } = await import('./display-controller.js');
+                testResults.push('✅ DisplayController imported successfully');
+                
+                // Test ClickHandler
+                const { default: ClickHandler } = await import('./click-handler.js');
+                testResults.push('✅ ClickHandler imported successfully');
+                
+                // Test ErrorHandler
+                const { default: ErrorHandler } = await import('./error-handler.js');
+                testResults.push('✅ ErrorHandler imported successfully');
+                
+                // Test FirebaseService
+                const { default: FirebaseService } = await import('./firebase-service.js');
+                testResults.push('✅ FirebaseService imported successfully');
+                
+                // Test ParameterParser
+                const { default: ParameterParser } = await import('./parameter-parser.js');
+                testResults.push('✅ ParameterParser imported successfully');
+                
+                // Test creating instances
+                const decryptionService = new DecryptionService();
+                const displayController = new DisplayController();
+                const clickHandler = new ClickHandler();
+                const errorHandler = new ErrorHandler();
+                const firebaseService = new FirebaseService();
+                const parameterParser = new ParameterParser();
+                
+                testResults.push('✅ All classes can be instantiated');
+                
+            } catch (error) {
+                testResults.push(`❌ Error: ${error.message}`);
+                console.error('Module import error:', error);
+            }
+            
+            results.innerHTML = testResults.map(result => `<p>${result}</p>`).join('');
+        }
+        
+        testModuleImports();
+    </script>
+</body>
+</html>

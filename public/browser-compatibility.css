@@ -1,0 +1,223 @@
+/* Cross-browser compatibility fixes for background image display */
+
+/* Base fixes for all browsers */
+#display-image {
+  /* Standard properties */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  
+  /* Vendor prefixes for background-size */
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain;
+  
+  /* Vendor prefixes for transitions */
+  -webkit-transition: opacity 0.3s ease;
+  -moz-transition: opacity 0.3s ease;
+  -o-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
+  
+  /* Prevent image dragging across browsers */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  
+  /* Prevent text selection across browsers */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  /* Touch action optimization */
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  
+  /* Hardware acceleration for smoother rendering */
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+  
+  /* Improve image rendering quality */
+  image-rendering: -webkit-optimize-contrast; /* Chrome, Safari */
+  image-rendering: -moz-crisp-edges; /* Firefox */
+  image-rendering: -o-crisp-edges; /* Opera */
+  image-rendering: crisp-edges; /* Standard */
+  -ms-interpolation-mode: nearest-neighbor; /* IE */
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  #display-image {
+    /* Fix for iOS Safari viewport height issues */
+    height: -webkit-fill-available;
+    
+    /* Prevent unwanted touch behaviors */
+    -webkit-touch-callout: none;
+    
+    /* Fix for iOS Safari rendering issues */
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000px;
+    
+    /* Fix for iOS Safari background image rendering */
+    -webkit-transform: translate3d(0, 0, 0);
+    
+    /* Fix for iOS Safari scrolling issues */
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Fix for iOS Safari full height */
+  html, body, #app-container, #image-container {
+    height: -webkit-fill-available;
+  }
+}
+
+/* Android Chrome specific fixes */
+@supports not (-webkit-touch-callout: none) and (-webkit-appearance: none) {
+  #display-image {
+    /* Fix for Android Chrome rendering issues */
+    background-attachment: scroll;
+    
+    /* Improve performance on Android */
+    will-change: transform;
+    
+    /* Fix for Android Chrome background image rendering */
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Microsoft Edge specific fixes */
+@supports (-ms-ime-align: auto) {
+  #display-image {
+    /* Fix for Edge background image rendering */
+    -ms-high-contrast-adjust: none;
+    
+    /* Improve Edge performance */
+    will-change: transform;
+  }
+}
+
+/* Internet Explorer specific fixes */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  #display-image {
+    /* Fix for IE background image rendering */
+    -ms-interpolation-mode: bicubic;
+    
+    /* Fix for IE background size */
+    background-size: contain !important;
+  }
+  
+  /* Fix for IE flexbox */
+  #app-container, #image-container {
+    display: -ms-flexbox;
+    -ms-flex-align: center;
+    -ms-flex-pack: center;
+  }
+}
+
+/* Firefox specific fixes */
+@-moz-document url-prefix() {
+  #display-image {
+    /* Fix for Firefox background image rendering */
+    image-rendering: -moz-crisp-edges;
+    
+    /* Improve Firefox performance */
+    will-change: transform;
+    
+    /* Fix for Firefox background size */
+    background-size: contain !important;
+  }
+}
+
+/* Safari specific fixes */
+@media not all and (min-resolution: 0.001dpcm) {
+  @supports (-webkit-appearance: none) {
+    #display-image {
+      /* Fix for Safari background image rendering */
+      -webkit-font-smoothing: subpixel-antialiased;
+      
+      /* Improve Safari performance */
+      will-change: transform;
+      
+      /* Fix for Safari background size */
+      -webkit-background-size: contain !important;
+    }
+  }
+}
+
+/* High DPI screen optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  #display-image {
+    /* Optimize background image rendering on high-DPI screens */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    image-rendering: -webkit-optimize-contrast; /* Safari */
+    image-rendering: crisp-edges; /* Firefox */
+  }
+}
+
+/* Fix for older browsers that don't support flexbox */
+@supports not (display: flex) {
+  #app-container, #image-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+  }
+  
+  #display-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+  }
+}
+
+/* Fix for browsers with limited CSS support */
+@supports not (background-size: contain) {
+  #display-image {
+    /* Fallback for browsers that don't support background-size */
+    max-width: 100%;
+    max-height: 100%;
+    background-position: center center;
+  }
+}
+
+/* Fix for print media */
+@media print {
+  #display-image {
+    /* Ensure image prints properly */
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* Fix for browsers with reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  #display-image {
+    /* Disable transitions for users who prefer reduced motion */
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+  }
+}
+
+/* Fix for browsers with high contrast preference */
+@media (prefers-contrast: high) {
+  #display-image {
+    /* Improve visibility in high contrast mode */
+    border: 1px solid currentColor;
+  }
+}

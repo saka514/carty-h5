@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test H5 App</title>
+    <script src="env-config.js"></script>
+</head>
+<body>
+    <h1>H5 Encrypted Display Page Test</h1>
+    <div id="test-results"></div>
+    <div id="image-container">
+        <img id="display-image" src="" alt="Display" style="max-width:100%;display:none;" />
+    </div>
+    <!-- build:replace-with-bundle -->
+    <script type="module">
+        async function ensureTestPayload() {
+            const testResults = document.getElementById('test-results');
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('payload')) {
+                // Already has payload, let app run as normal
+                testResults.innerHTML = '<p>Payload detected in URL. Running app as normal...</p>';
+                return;
+            }
+            try {
+                // Import DecryptionService
+                const { default: DecryptionService } = await import('./decryption-service.js');
+                // Create test instruction set
+                const instructionSet = {
+                    image_url: 'https://dsp-material.advlove.io/upload/20230414/b906239c100cd2b8ababe97611381204.gif',
+                    click_url: 'https://play.google.com/store/apps/details?id=com.alibaba.aliexpresshd&gl=it',
+                    deeplink_url: null,
+                    auto_click: false,
+                    deeplink_priority: false,
+                    auto_click_delay: null
+                };
+                // Create decryption service
+                const service = new DecryptionService();
+                // Encrypt the instruction set
+                const encryptedPayload = await service.encrypt(instructionSet);
+                // Create test URL
+                const testUrl = `./index.html?payload=${encodeURIComponent(encryptedPayload)}`;
+                // 自动跳转到带 payload 的 URL
+                window.location.href = testUrl;
+                testResults.innerHTML = `
+                    <h2>No payload detected. Generated test payload:</h2>
+                    <p><strong>Instruction Set:</strong></p>
+                    <pre>${JSON.stringify(instructionSet, null, 2)}</pre>
+                    <p><strong>Encrypted Payload:</strong></p>
+                    <pre>${encryptedPayload}</pre>
+                    <p><strong>Test This Page With Payload:</strong></p>
+                    <a href="${testUrl}" target="_blank">Open test-app.html with payload</a>
+                    <br><br>
+                    <button onclick="window.open('${testUrl}', '_blank')">Open Test Page</button>
+                `;
+            } catch (error) {
+                testResults.innerHTML = `
+                    <h2>Error:</h2>
+                    <p style="color: red;">${error.message}</p>
+                    <pre>${error.stack}</pre>
+                `;
+            }
+        }
+        ensureTestPayload();
+    </script>
+    <!-- /build:replace-with-bundle -->
+</body>
+</html>
