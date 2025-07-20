@@ -160,6 +160,9 @@ class App {
     try {
       console.log('📊 Initializing Firebase Service...');
 
+      // Wait for Firebase to be initialized in index.html
+      await this.waitForFirebaseAppInitialized();
+
       this.components.firebaseService = new FirebaseService();
       window.firebaseService = this.components.firebaseService;
 
@@ -176,6 +179,23 @@ class App {
       console.error('❌ Failed to initialize Firebase Service:', error);
       this.handleComponentError('firebase_service', error);
     }
+  }
+
+  // Add this helper method
+  async waitForFirebaseAppInitialized(maxWaitMs = 5000) {
+    const interval = 100;
+    let waited = 0;
+    while (waited < maxWaitMs) {
+      if (typeof firebase !== 'undefined') {
+        try {
+          firebase.app();
+          return;
+        } catch (e) {}
+      }
+      await new Promise(resolve => setTimeout(resolve, interval));
+      waited += interval;
+    }
+    throw new Error('Timed out waiting for Firebase App to be initialized');
   }
 
   /**
@@ -318,8 +338,6 @@ class App {
       }
 
       console.log('🔓 Decrypting instruction set...');
-      console.log('Using decryptionService instance:', this.components.decryptionService);
-      console.log('window.decryptionService at decrypt time:', window.decryptionService);
       const startTime = performance.now();
       
       const instructionSet = await this.components.decryptionService.decrypt(encryptedPayload);

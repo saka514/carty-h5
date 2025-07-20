@@ -496,32 +496,34 @@ class ErrorHandler {
    */
   degradeDecryptionFailure() {
     console.log('ErrorHandler: Implementing graceful degradation for decryption failure');
-    
     // Try to extract payload from URL
     const urlParams = new URLSearchParams(window.location.search);
     const payload = urlParams.get('payload');
-    
     if (payload) {
       // Check for common payload format issues
       const fixedPayload = this.fixPayloadFormat(payload);
-      
       if (fixedPayload !== payload) {
         console.log('ErrorHandler: Attempting recovery with fixed payload format');
-        
         // Create a new URL with the fixed payload
         const newUrl = new URL(window.location.href);
         newUrl.searchParams.set('payload', fixedPayload);
-        
         // Reload with the fixed payload
         console.log('ErrorHandler: Reloading with fixed payload');
         window.location.href = newUrl.toString();
         return;
       }
     }
-    
+    // 主动通知 service worker 清理缓存
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: 'CACHE_UPDATE' });
+      // reload 页面，确保资源为最新
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+      return;
+    }
     // If we can't fix the payload, disable functionality that depends on decrypted instructions
     console.log('ErrorHandler: Unable to fix payload, disabling dependent functionality');
-    
     // Show informational message about requiring valid encrypted payload
     const errorMessage = document.getElementById('error-message');
     if (errorMessage) {
