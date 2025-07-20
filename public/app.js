@@ -210,8 +210,6 @@ class App {
       // 再次确保全局挂载
       window.decryptionService = this.components.decryptionService;
       console.log('✅ Decryption Service initialized successfully');
-      console.log('DecryptionService instance:', this.components.decryptionService);
-      console.log('window.decryptionService:', window.decryptionService);
     } catch (error) {
       console.error('❌ Failed to initialize Decryption Service:', error);
       this.handleComponentError('decryption_service', error);
