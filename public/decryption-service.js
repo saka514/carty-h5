@@ -114,7 +114,6 @@ class DecryptionService {
         // Parse and validate the instruction set
         const instructionSet = this.parseInstructionSet(decryptedText);
         
-        console.log('DecryptionService: Successfully decrypted payload');
         return instructionSet;
       } catch (decryptionError) {
         // Try with fixed payload format if initial attempt fails
@@ -155,8 +154,6 @@ class DecryptionService {
 
           // Parse and validate the instruction set
           const instructionSet = this.parseInstructionSet(decryptedText);
-          
-          console.log('DecryptionService: Successfully decrypted payload with fixed format');
           return instructionSet;
         } else {
           // If we couldn't fix the payload, throw the original error
@@ -227,13 +224,13 @@ class DecryptionService {
       throw new Error('Invalid instruction set - must be an object');
     }
 
-    // Required field: image_url
-    if (!data.image_url || typeof data.image_url !== 'string') {
-      throw new Error('Invalid instruction set - image_url is required and must be a string');
+    // Required field: click_url
+    if (!data.click_url || typeof data.click_url !== 'string') {
+      throw new Error('Invalid instruction set - click_url is required and must be a string');
     }
 
     // Validate image_url format
-    if (!this.isValidUrl(data.image_url)) {
+    if (data.image_url && (!this.isValidUrl(data.image_url))) {
       throw new Error('Invalid instruction set - image_url must be a valid URL');
     }
 
@@ -244,7 +241,9 @@ class DecryptionService {
       deeplink_url: data.deeplink_url || null,
       auto_click: Boolean(data.auto_click),
       deeplink_priority: Boolean(data.deeplink_priority),
-      auto_click_delay: null
+      auto_click_delay: null,
+      title: data.title,
+      description: data.description
     };
 
     // Validate optional URLs

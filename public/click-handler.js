@@ -31,13 +31,6 @@ class ClickHandler {
     if (this.instructionSet.auto_click) {
       this.scheduleAutoClick();
     }
-
-    console.log('✅ ClickHandler initialized with instruction set:', {
-      has_click_url: !!this.instructionSet.click_url,
-      has_deeplink_url: !!this.instructionSet.deeplink_url,
-      auto_click: this.instructionSet.auto_click,
-      deeplink_priority: this.instructionSet.deeplink_priority
-    });
   }
 
   /**
@@ -84,8 +77,6 @@ class ClickHandler {
       };
       
       this.clickListenersSetup = true;
-      console.log('✅ Enhanced click listeners set up successfully');
-      
     } catch (error) {
       console.error('❌ Failed to set up click listeners:', error);
       throw new Error('Failed to initialize click event listeners');
@@ -146,7 +137,6 @@ class ClickHandler {
       };
     }
     
-    console.log('👆 Touch start detected');
   }
 
   /**
@@ -372,7 +362,6 @@ class ClickHandler {
         // Check if page becomes hidden (app might have opened)
         const visibilityHandler = () => {
           if (document.hidden) {
-            console.log('✅ Page became hidden - deeplink likely succeeded');
             clearTimeout(timeout);
             document.removeEventListener('visibilitychange', visibilityHandler);
             document.body.removeChild(iframe);
@@ -386,7 +375,6 @@ class ClickHandler {
         const blurHandler = () => {
           const timeDiff = Date.now() - startTime;
           if (timeDiff > 100) { // Small delay to avoid false positives
-            console.log('✅ Page lost focus - deeplink likely succeeded');
             clearTimeout(timeout);
             window.removeEventListener('blur', blurHandler);
             document.removeEventListener('visibilitychange', visibilityHandler);

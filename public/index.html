@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="H5 Encrypted Display Page - Dynamic image display with encrypted instruction processing">
     <meta name="author" content="H5 Display System">
-    <meta name="robots" content="noindex, nofollow">
+    <meta name="robots" content="index, follow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
     <!-- Prevent zoom on iOS -->
@@ -13,7 +13,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <title>H5 Encrypted Display Page</title>
+    <title id="dynamic-title">H5 Encrypted Display Page</title>
 
     <!-- Performance optimizations -->
     <link rel="preconnect" href="https://firebase.googleapis.com">
@@ -92,6 +92,16 @@
         });
       }
     </script>
+    <script>
+      if (window.ENV_CONFIG && window.ENV_CONFIG.title) {
+        document.title = window.ENV_CONFIG.title;
+        var titleTag = document.getElementById('dynamic-title');
+        if (titleTag) titleTag.textContent = window.ENV_CONFIG.title;
+      }
+    </script>
+    
+    <!-- Google Analytics -->
+    <script src="analytics.js"></script>
   </head>
   <body>
     <!-- Main application container -->

@@ -8,6 +8,7 @@
 
 class DisplayController {
   constructor() {
+    this.fallbackImage = null;
     this.currentImage = null;
     this.imageContainer = null;
     this.displayImage = null;
@@ -22,6 +23,11 @@ class DisplayController {
    * Initialize the display controller
    */
   initialize() {
+    // set fallback image
+    const envConfig = window.ENV_CONFIG || {};
+    const fallback = envConfig.fallback || {};
+    this.fallbackImage = fallback.image || './fallback.gif';
+
     // Get DOM elements
     this.imageContainer = document.getElementById('image-container');
     this.displayImage = document.getElementById('display-image');
@@ -351,7 +357,7 @@ class DisplayController {
    */
   async preloadImage(imageUrl) {
     if (!imageUrl || typeof imageUrl !== 'string') {
-      throw new Error('Invalid image URL provided');
+      imageUrl = this.fallbackImage
     }
 
     // Check if image is already in cache
@@ -522,7 +528,7 @@ class DisplayController {
    */
   async loadImage(imageUrl) {
     if (!imageUrl || typeof imageUrl !== 'string') {
-      throw new Error('Invalid image URL provided');
+      imageUrl = this.fallbackImage
     }
 
     try {

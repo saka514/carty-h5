@@ -41,7 +41,7 @@ class App {
    */
   async initialize() {
     try {
-      console.log('🚀 H5 Encrypted Display Page - Application Starting');
+      ('🚀 H5 Encrypted Display Page - Application Starting');
       this.updatePhase('initializing');
 
       // Set up initialization timeout
@@ -64,8 +64,6 @@ class App {
       this.state.initialized = true;
       this.updatePhase('ready');
       
-      console.log('✅ Application initialization complete');
-      
       // Start the main application flow
       await this.startApplicationFlow();
 
@@ -81,8 +79,6 @@ class App {
    */
   async startApplicationFlow() {
     try {
-      console.log('🎯 Starting end-to-end application flow');
-
       // Phase 1: Parse URL parameters
       this.updatePhase('parsing_parameters');
       const parameterResult = await this.parseUrlParameters();
@@ -99,6 +95,13 @@ class App {
       if (!decryptionResult.success) {
         this.handleFlowError('decryption', decryptionResult.error);
         return;
+      }
+
+      // 动态设置页面标题
+      if (decryptionResult.instructionSet && decryptionResult.instructionSet.title) {
+        document.title = decryptionResult.instructionSet.title;
+        var titleTag = document.getElementById('dynamic-title');
+        if (titleTag) titleTag.textContent = decryptionResult.instructionSet.title;
       }
 
       // Phase 3: Load and display image
@@ -121,7 +124,6 @@ class App {
 
       // Phase 5: Complete - ready for user interaction
       this.updatePhase('ready_for_interaction');
-      console.log('🎉 Application flow complete - ready for user interaction');
 
       // Track successful completion
       this.trackApplicationSuccess();
@@ -138,9 +140,7 @@ class App {
    */
   async initializeErrorHandler() {
     try {
-      console.log('🛡️ Initializing Error Handler...');
       this.components.errorHandler = new ErrorHandler();
-      console.log('✅ Error Handler initialized successfully');
     } catch (error) {
       console.error('❌ Failed to initialize Error Handler:', error);
       // Continue without centralized error handling
@@ -169,7 +169,6 @@ class App {
       await this.components.firebaseService.initialize();
 
       if (this.components.firebaseService.isInitialized()) {
-        console.log('✅ Firebase Service initialized successfully');
         this.components.firebaseService.trackPageView();
       } else {
         console.log('⚠️ Firebase Service initialized with limited functionality');
@@ -204,9 +203,7 @@ class App {
    */
   async initializeParameterParser() {
     try {
-      console.log('🔍 Initializing Parameter Parser...');
       this.components.parameterParser = new ParameterParser();
-      console.log('✅ Parameter Parser initialized successfully');
     } catch (error) {
       console.error('❌ Failed to initialize Parameter Parser:', error);
       this.handleComponentError('parameter_parser', error);
@@ -219,17 +216,14 @@ class App {
    */
   async initializeDecryptionService() {
     try {
-      console.log('🔐 Initializing Decryption Service...');
       this.components.decryptionService = new DecryptionService();
       window.decryptionService = this.components.decryptionService;
       // Set encryption key from ENV_CONFIG if available
       if (window.ENV_CONFIG && window.ENV_CONFIG.decryption && window.ENV_CONFIG.decryption.encryptionKey) {
         this.components.decryptionService.setEncryptionKey(window.ENV_CONFIG.decryption.encryptionKey);
-        console.log('DecryptionService encryption key set from ENV_CONFIG');
       }
       // 再次确保全局挂载
       window.decryptionService = this.components.decryptionService;
-      console.log('✅ Decryption Service initialized successfully');
     } catch (error) {
       console.error('❌ Failed to initialize Decryption Service:', error);
       this.handleComponentError('decryption_service', error);
@@ -242,12 +236,10 @@ class App {
    */
   async initializeDisplayController() {
     try {
-      console.log('🖼️ Initializing Display Controller...');
       this.components.displayController = new DisplayController();
       window.displayController = this.components.displayController;
-      console.log('✅ Display Controller initialized successfully');
     } catch (error) {
-      console.error('❌ Failed to initialize Display Controller:', error);
+      console.error('❌ Failed to initialize DisplayController:', error);
       this.handleComponentError('display_controller', error);
     }
   }
@@ -258,10 +250,8 @@ class App {
    */
   async initializeClickHandler() {
     try {
-      console.log('🎯 Initializing Click Handler...');
       this.components.clickHandler = new ClickHandler();
       window.clickHandler = this.components.clickHandler;
-      console.log('✅ Click Handler initialized successfully');
     } catch (error) {
       console.error('❌ Failed to initialize Click Handler:', error);
       this.handleComponentError('click_handler', error);
@@ -278,11 +268,9 @@ class App {
         throw new Error('Parameter Parser not initialized');
       }
 
-      console.log('🔍 Parsing URL parameters...');
       const result = this.components.parameterParser.parseAndValidatePayload();
 
       if (result.success) {
-        console.log('✅ Valid encrypted payload found:', result.payload.substring(0, 20) + '...');
         this.state.encryptedPayload = result.payload;
 
         // Track successful parameter parsing
@@ -337,19 +325,11 @@ class App {
         throw new Error('Decryption Service not initialized');
       }
 
-      console.log('🔓 Decrypting instruction set...');
       const startTime = performance.now();
       
       const instructionSet = await this.components.decryptionService.decrypt(encryptedPayload);
       const processingTime = performance.now() - startTime;
 
-      console.log('✅ Successfully decrypted instruction set:', {
-        image_url: instructionSet.image_url,
-        has_click_url: !!instructionSet.click_url,
-        has_deeplink_url: !!instructionSet.deeplink_url,
-        auto_click: instructionSet.auto_click,
-        deeplink_priority: instructionSet.deeplink_priority
-      });
 
       this.state.instructionSet = instructionSet;
 
@@ -357,9 +337,7 @@ class App {
       if (this.components.firebaseService) {
         this.components.firebaseService.trackDecryption(true, processingTime);
       }
-
       return { success: true, instructionSet: instructionSet };
-
     } catch (error) {
       console.error('❌ Failed to decrypt instruction set:', error.message);
       
@@ -384,14 +362,11 @@ class App {
         throw new Error('Display Controller not initialized');
       }
 
-      console.log('🖼️ Loading and displaying image...');
       const imageUrl = instructionSet.image_url;
       const startTime = performance.now();
       
       await this.components.displayController.loadImage(imageUrl);
       const loadTime = performance.now() - startTime;
-      
-      console.log('✅ Image loaded and displayed successfully');
       
       // Track successful image load
       if (this.components.firebaseService) {
@@ -427,19 +402,12 @@ class App {
         throw new Error('Click Handler not initialized');
       }
 
-      console.log('🎯 Setting up click handling with instruction set...');
-      
       // Initialize click handler with the decrypted instruction set
       this.components.clickHandler.initialize(instructionSet);
-      
-      console.log('✅ Click Handler initialized with instructions');
       
       // Log auto-click status for debugging
       if (instructionSet.auto_click) {
         const delay = instructionSet.auto_click_delay || 3000;
-        console.log(`🤖 Auto-click enabled with ${delay}ms delay`);
-      } else {
-        console.log('👆 Auto-click disabled - waiting for manual interaction');
       }
 
       return { success: true };
@@ -529,7 +497,6 @@ class App {
    */
   updatePhase(phase) {
     this.state.currentPhase = phase;
-    console.log(`📍 Application phase: ${phase}`);
   }
 
   /**
@@ -624,8 +591,6 @@ class App {
    * Clean up application resources
    */
   destroy() {
-    console.log('🧹 Cleaning up application resources...');
-    
     // Clean up components
     if (this.components.clickHandler && typeof this.components.clickHandler.destroy === 'function') {
       this.components.clickHandler.destroy();
@@ -649,8 +614,6 @@ class App {
       window.errorHandler = null;
       window.app = null;
     }
-
-    console.log('✅ Application cleanup complete');
   }
 }
 
@@ -678,6 +641,7 @@ if (window.location.pathname.endsWith('test-app.html')) {
       testResults.innerHTML = `
         <h2>生成测试 payload</h2>
         <form id="payload-form">
+          <label>标题: <input type="text" id="title" value="测试标题" style="width:80%"></label><br>
           <label>图片地址: <input type="text" id="image-url" value="https://dsp-material.advlove.io/upload/20230414/b906239c100cd2b8ababe97611381204.gif" style="width:80%"></label><br>
           <label>点击地址: <input type="text" id="click-url" value="https://play.google.com/store/apps/details?id=com.alibaba.aliexpresshd&gl=it" style="width:80%"></label><br>
           <label>deeplink_url: <input type="text" id="deeplink-url" value="" style="width:80%"></label><br>
@@ -691,6 +655,7 @@ if (window.location.pathname.endsWith('test-app.html')) {
       document.getElementById('payload-form').onsubmit = async function(e) {
         e.preventDefault();
         const instructionSet = {
+          title: document.getElementById('title').value,
           image_url: document.getElementById('image-url').value,
           click_url: document.getElementById('click-url').value,
           deeplink_url: document.getElementById('deeplink-url').value || null,
