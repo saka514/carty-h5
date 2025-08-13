@@ -114,19 +114,37 @@ class BuildOptimizer {
   async bundleAndMinifyJS() {
     console.log('📦 Bundling and minifying JavaScript with esbuild...');
     const esbuild = await import('esbuild');
-    await esbuild.build({
-      entryPoints: [path.join(this.sourceDir, 'app.js')],
+    
+    const entryPoint = path.resolve(this.sourceDir, 'app.js');
+    console.log('🔍 Entry point:', entryPoint);
+    
+    const result = await esbuild.default.build({
+      entryPoints: [entryPoint],
       bundle: true,
       minify: true,
+      minifyIdentifiers: true,
+      minifySyntax: true,
       outfile: path.join(this.buildDir, 'app.bundle.min.js'),
       format: 'iife',
       target: ['es2017'],
       platform: 'browser',
+      resolveExtensions: ['.js', '.mjs'],
+      loader: {
+        '.js': 'js'
+      },
       define: { 'process.env.NODE_ENV': JSON.stringify(this.environment) },
       banner: {
         js: `// Performance monitoring\n(function() {\n  const startTime = performance.now();\n  window.addEventListener('load', function() {\n    const loadTime = performance.now() - startTime;\n    console.log('📊 Page load time:', loadTime.toFixed(2) + 'ms');\n    if (window.firebaseService) {\n      window.firebaseService.trackPerformance('page_load_time', loadTime);\n    }\n  });\n})();\n`
-      }
+      },
+      metafile: true,
+      logLevel: 'info'
     });
+    
+    if (result.metafile) {
+      const analysis = await esbuild.default.analyzeMetafile(result.metafile);
+      console.log('📊 Bundle analysis:', analysis);
+    }
+    
     console.log('✅ JavaScript bundled and minified with esbuild');
   }
 
@@ -158,6 +176,15 @@ class BuildOptimizer {
   async copyAssets() {
     console.log('📁 Copying assets...');
     // 这里不再复制 test-app.html，避免覆盖 optimizeHTML 已处理的文件
+    // 新增：拷贝 robots.txt 到构建目录
+    let assets = ['robots.txt', 'fallback.gif', 'ai-agent-promo.html', 'analytics.js', 'privacy_policy.html']
+    for (const asset of assets) {
+      const assetPath = path.join(this.sourceDir, asset);
+      if (fs.existsSync(assetPath)) {
+        fs.copyFileSync(assetPath, path.join(this.buildDir, asset));
+        console.log(`✅ ${asset} copied`);
+      }
+    }
     console.log('✅ Assets copied');
   }
 

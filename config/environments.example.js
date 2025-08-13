@@ -6,7 +6,12 @@
 const environments = {
   development: {
     debug: true,
-    analytics: false,
+    analytics: {
+      enabled: false,
+      googleAnalytics: {
+        trackingId: 'GA_TRACKING_ID_DEV' // Development GA tracking ID
+      }
+    },
     errorReporting: false,
     performanceMonitoring: false,
     firebase: {
@@ -34,7 +39,12 @@ const environments = {
 
   production: {
     debug: false,
-    analytics: true,
+    analytics: {
+      enabled: true,
+      googleAnalytics: {
+        trackingId: process.env.GA_TRACKING_ID || 'G-XXXXXXXXXX' // Production GA tracking ID
+      }
+    },
     errorReporting: true,
     performanceMonitoring: true,
     firebase: {
@@ -69,7 +79,12 @@ const environments = {
 
   'github-pages': {
     debug: false,
-    analytics: true,
+    analytics: {
+      enabled: true,
+      googleAnalytics: {
+        trackingId: 'G-QSZXBCRX8J' // GitHub Pages GA tracking ID
+      }
+    },
     errorReporting: true,
     performanceMonitoring: true,
     firebase: {
